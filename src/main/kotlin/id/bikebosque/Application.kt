@@ -7,7 +7,7 @@ import io.ktor.server.netty.*
 import org.ktorm.database.Database
 
 fun main() {
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
+    embeddedServer(Netty, port = 8080, host = "barsserver-development.up.railway.app", module = Application::module)
         .start(wait = true)
 }
 
