@@ -17,8 +17,8 @@ fun Application.module() {
 }
 
 fun database() = Database.connect(
-    "jdbc:mysql://localhost:3306/bars",
+    "jdbc:mysql://containers-us-west-38.railway.app:6055/railway",
     user = "root",
-    password = "P@ssw0rd",
+    password = "bi1UAptl5eQzrQgUcC4D",
     driver = "com.mysql.jdbc.Driver"
 )
