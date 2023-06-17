@@ -1,4 +1,4 @@
-package id.bikebosque.models
+package id.bikebosque.models.tables
 
 import org.ktorm.schema.Table
 import org.ktorm.schema.int

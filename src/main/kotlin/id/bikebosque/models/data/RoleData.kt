@@ -1,5 +1,6 @@
-package id.bikebosque.models
+package id.bikebosque.models.data
 
+import id.bikebosque.models.tables.Role
 import kotlinx.serialization.Serializable
 import org.ktorm.dsl.Query
 import org.ktorm.dsl.forEach

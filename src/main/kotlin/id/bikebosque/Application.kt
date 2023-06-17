@@ -20,5 +20,5 @@ fun database() = Database.connect(
     "jdbc:mysql://containers-us-west-38.railway.app:6055/railway",
     user = "root",
     password = "bi1UAptl5eQzrQgUcC4D",
-    driver = "com.mysql.jdbc.Driver"
+    driver = "com.mysql.cj.jdbc.Driver"
 )

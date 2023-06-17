@@ -35,4 +35,8 @@ dependencies {
     implementation("org.ktorm:ktorm-core:3.5.0")
     implementation("org.ktorm:ktorm-support-mysql:3.5.0")
 
+    //cloudinary
+    implementation("com.cloudinary:cloudinary-http44:1.2.1")
+//    compile group: 'com.cloudinary', name: 'cloudinary-http44', version: '[Cloudinary API version, e.g. 1.1.3]'
+
 }
