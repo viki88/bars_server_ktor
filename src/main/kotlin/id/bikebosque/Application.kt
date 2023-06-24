@@ -22,3 +22,12 @@ fun database() = Database.connect(
     password = "bi1UAptl5eQzrQgUcC4D",
     driver = "com.mysql.cj.jdbc.Driver"
 )
+
+fun localDatabase() = Database.connect(
+    "jdbc:mysql://localhost:3306/bars",
+    user = "root",
+    password = "P@ssw0rd",
+    driver = "com.mysql.cj.jdbc.Driver"
+)
+
+fun connectDatabase(useLocal :Boolean = true) = if (useLocal) localDatabase() else database()

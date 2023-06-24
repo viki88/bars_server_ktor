@@ -5,8 +5,8 @@ import org.ktorm.schema.int
 import org.ktorm.schema.varchar
 
 
-object Role :Table<Nothing>("role"){
-    val id = int("id").primaryKey()
-    val roleName = varchar("role_name")
-    val roleDesc = varchar("role_desc")
+object Role :Table<Nothing>(ConstantsTable.TABLE_ROLE){
+    val id = int(ConstantsTable.ID).primaryKey()
+    val roleName = varchar(ConstantsTable.ROLE_NAME)
+    val roleDesc = varchar(ConstantsTable.ROLE_DESC)
 }

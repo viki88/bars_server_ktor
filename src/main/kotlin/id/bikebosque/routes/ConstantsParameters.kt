@@ -16,6 +16,10 @@ class ConstantsParameters {
         const val PHOTO_URL_PARAM = "photo_url"
         const val KOMUNITAS_PARAM = "komunitas"
         const val NOKTP_PARAM = "no_ktp"
+        const val ID_PARENT_PARAM = "id_parent"
+        const val NO_KIA_PARAM = "no_kia"
+        const val NO_RIDER_PARAM = "no_rider"
+        const val AVATAR_PARAM = "avatar"
 
     }
 }

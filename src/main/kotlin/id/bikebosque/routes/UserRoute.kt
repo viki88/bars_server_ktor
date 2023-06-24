@@ -1,9 +1,11 @@
 package id.bikebosque.routes
 
 import com.google.gson.Gson
-import id.bikebosque.database
+import id.bikebosque.connectDatabase
+import id.bikebosque.models.data.ParentData
 import id.bikebosque.models.response.BaseResponse
 import id.bikebosque.models.response.UploadImageResponse
+import id.bikebosque.models.tables.Child
 import id.bikebosque.models.tables.Parent
 import id.bikebosque.utils.UploadFileService
 import id.bikebosque.utils.md5
@@ -17,9 +19,13 @@ import org.ktorm.dsl.*
 import org.ktorm.support.mysql.insertOrUpdate
 import java.io.File
 import java.sql.SQLIntegrityConstraintViolationException
+import kotlin.math.tan
 
 fun Route.userRoute(){
     route("/user"){
+
+        childRoute()
+        parentRoute()
 
         post("/register") {
             val registerParameters = call.receiveParameters()
@@ -37,7 +43,7 @@ fun Route.userRoute(){
             var messageResponse = "Success Register"
             var statusCode = HttpStatusCode.OK.value
             try {
-                val int = database().insertOrUpdate(Parent){
+                val int = connectDatabase().insertOrUpdate(Parent){
                     set(it.nama, namaParam)
                     set(it.email, emailParam)
                     set(it.password, passwordParam?.md5())
@@ -102,7 +108,7 @@ fun Route.userRoute(){
             val emailParam = loginParameters[ConstantsParameters.EMAIL_PARAM]
             val passwordParam = loginParameters[ConstantsParameters.PASSWORD_PARAM]
 
-            val queryLogin = database().from(Parent).select(Parent.password).limit(0,1).where{ Parent.email.eq(emailParam as String)}
+            val queryLogin = connectDatabase().from(Parent).select(Parent.password).limit(0,1).where{ Parent.email.eq(emailParam as String)}
             var passwordIsMatched = false
             val totalRecords = queryLogin.totalRecords
             if (totalRecords > 0) {
@@ -110,20 +116,16 @@ fun Route.userRoute(){
                     queryLogin.forEach { password ->
                         passwordIsMatched = password[Parent.password] == passwordParam?.md5()
                     }
-                    call.respondText{
-                        Gson().toJson(
-                            BaseResponse(
-                                if (passwordIsMatched) HttpStatusCode.OK.value else HttpStatusCode.NotFound.value,
-                                if (passwordIsMatched) "Sukses Login" else "Password anda salah silahkan coba lagi"
-                            )
-                        )
-                    }
+                    call.respondText {
+                        BaseResponse.toResponseString(
+                            if (passwordIsMatched) HttpStatusCode.OK.value else HttpStatusCode.NotFound.value,
+                            if (passwordIsMatched) "Sukses Login" else "Password anda salah silahkan coba lagi",
+                            null) }
                 }
-            }else{
-                call.respondText { Gson().toJson(BaseResponse(HttpStatusCode.NotFound.value, "Akun anda belum terdaftar")) }
-            }
+            }else call.respondText { BaseResponse.toResponseString(HttpStatusCode.NotFound.value, "Akun anda belum terdaftar", null) }
 
         }
+
 
     }
 
