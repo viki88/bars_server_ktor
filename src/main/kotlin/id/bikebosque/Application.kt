@@ -5,6 +5,10 @@ import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import org.ktorm.database.Database
+import java.io.File
+import java.io.FileInputStream
+import java.util.Properties
+import kotlin.io.path.Path
 
 fun main() {
     embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
