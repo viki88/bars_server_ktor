@@ -9,12 +9,15 @@ class ConstantsTable {
         const val TABLE_PARENT = "parent"
         const val TABLE_CHILD = "child"
         const val TABLE_ROLE = "role"
+        const val TABLE_HISTORY_RACE = "history_race"
 
         /**
          * Column Name
          */
         const val ID = "id"
         const val ID_PARENT = "id_parent"
+        const val ID_EVENT = "id_event"
+        const val ID_CHILD = "id_child"
         const val NAMA = "nama"
         const val EMAIL = "email"
         const val PASSWORD = "password"
@@ -30,6 +33,12 @@ class ConstantsTable {
         const val AVATAR = "avatar"
         const val ROLE_NAME = "role_name"
         const val ROLE_DESC = "role_desc"
+        const val KELAS = "kelas"
+        const val PODIUM = "podium"
+        const val IS_VERIFIED = "is_verified"
+        const val ID_VERIFICATOR = "id_verificator"
+        const val VERIFIED_DATE = "verified_date"
+        const val NAMA_EVENT = "nama_event"
 
     }
 }

@@ -20,6 +20,11 @@ class ConstantsParameters {
         const val NO_KIA_PARAM = "no_kia"
         const val NO_RIDER_PARAM = "no_rider"
         const val AVATAR_PARAM = "avatar"
+        const val ID_CHILD_PARAM = "id_child"
+        const val KELAS_PARAM = "kelas"
+        const val PODIUM_PARAM = "podium"
+        const val NAMA_EVENT_PARAM = "nama_event"
+        const val ID_EVENT_PARAM = "id_event"
 
     }
 }

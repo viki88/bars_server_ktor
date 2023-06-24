@@ -3,8 +3,10 @@ package id.bikebosque.routes
 import com.google.gson.Gson
 import id.bikebosque.connectDatabase
 import id.bikebosque.models.data.ChildData
+import id.bikebosque.models.data.HistoryRaceData
 import id.bikebosque.models.response.BaseResponse
 import id.bikebosque.models.tables.Child
+import id.bikebosque.models.tables.HistoryRace
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -60,6 +62,51 @@ fun Route.childRoute(){
                     HttpStatusCode.OK.value,
                     "Success",
                     ChildData.toChildDatas(query))
+            }
+        }
+
+        post("/add-history-race"){
+            val historyRaceParam = call.receiveParameters()
+            val idChildParam = historyRaceParam[ConstantsParameters.ID_CHILD_PARAM]
+            val kelasParam = historyRaceParam[ConstantsParameters.KELAS_PARAM]
+            val namaEventParam = historyRaceParam[ConstantsParameters.NAMA_EVENT_PARAM]
+            val podiumParam = historyRaceParam[ConstantsParameters.PODIUM_PARAM]
+            val idEventParam = historyRaceParam[ConstantsParameters.ID_EVENT_PARAM]
+
+            val result = connectDatabase().insertOrUpdate(HistoryRace){
+//                set(HistoryRace.idEvent, 0)
+                set(HistoryRace.idChild, idChildParam?.toInt())
+                set(HistoryRace.kelas, kelasParam)
+                set(HistoryRace.namaEvent, namaEventParam)
+                set(HistoryRace.podium, podiumParam)
+                set(HistoryRace.isVerified, false)
+//                set(HistoryRace.idVerificator, 0)
+//                set(HistoryRace.verifiedDate, 0)
+            }
+
+            call.respondText {
+                BaseResponse.toResponseString(
+                    if (result > 0) HttpStatusCode.OK.value else HttpStatusCode.BadRequest.value,
+                    if (result > 0) "Sukses input history race" else "Gagal input history race, silahkan coba lagi",
+                    null
+                )
+            }
+        }
+
+        get("/history-race"){
+            val historyRaceParameter = call.parameters
+            val idChildParameter = historyRaceParameter[ConstantsParameters.ID_CHILD_PARAM]
+
+            val query = connectDatabase().from(HistoryRace).select().where { HistoryRace.idChild.eq(idChildParameter?.toInt() ?: 1) }
+
+            val data = HistoryRaceData.toHistoryRaceDataList(query)
+
+            call.respondText {
+                BaseResponse.toResponseString(
+                    HttpStatusCode.OK.value,
+                    "Sukses mengambil data",
+                    data
+                )
             }
         }
     }
