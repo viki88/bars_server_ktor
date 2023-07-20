@@ -1,0 +1,8 @@
+runtime: java11
+#entrypoint: 'java -cp "*" id.bikebosque.ApplicationKt cloudsql.war'
+#
+#env_variables:
+#  CLOUD_SQL_CONNECTION_NAME: "bars-web-service:us-central1:bars-database"
+#  DB_NAME: "bars"
+#  DB_USER: "root"
+#  DB_PASS: "P@ssword"

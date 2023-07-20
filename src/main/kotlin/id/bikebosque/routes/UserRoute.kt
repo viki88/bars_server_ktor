@@ -1,11 +1,8 @@
 package id.bikebosque.routes
 
-import com.google.gson.Gson
 import id.bikebosque.connectDatabase
-import id.bikebosque.models.data.ParentData
 import id.bikebosque.models.response.BaseResponse
 import id.bikebosque.models.response.UploadImageResponse
-import id.bikebosque.models.tables.Child
 import id.bikebosque.models.tables.Parent
 import id.bikebosque.utils.UploadFileService
 import id.bikebosque.utils.md5
@@ -17,9 +14,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.ktorm.dsl.*
 import org.ktorm.support.mysql.insertOrUpdate
-import java.io.File
 import java.sql.SQLIntegrityConstraintViolationException
-import kotlin.math.tan
 
 fun Route.userRoute(){
     route("/user"){
@@ -69,38 +64,41 @@ fun Route.userRoute(){
         }
 
         post("/upload-image"){
-            var fileDescription = ""
-            var fileName = ""
-            var fileImage :File? = null
+            try {
+                var fileDescription :String
+                var fileName :String
+                var objectName :String = ""
 
-            val multipartData = call.receiveMultipart()
-            multipartData.forEachPart { part ->
-                when(part){
-                    is PartData.FormItem -> {
-                        fileDescription = part.value
+                val multipartData = call.receiveMultipart()
+                val queryData = call.parameters
+                val emailParameter = queryData["email"]
+                val typeParameter = queryData["type"]
+                multipartData.forEachPart { part ->
+                    when(part){
+                        is PartData.FormItem -> {
+                            fileDescription = part.value
+                        }
+                        is PartData.FileItem -> {
+                            fileName = part.originalFileName as String
+                            val fileBytes = part.streamProvider().readBytes()
+                            objectName = "$emailParameter-$typeParameter-image.jpg"
+                            UploadFileService.uploadObject(fileBytes, objectName)
+                        }
+                        else -> {}
                     }
-                    is PartData.FileItem -> {
-                        fileName = part.originalFileName as String
-                        val fileBytes = part.streamProvider().readBytes()
-                        fileImage = File("uploads/$fileName")
-                        fileImage?.writeBytes(fileBytes)
-                    }
-                    else -> {}
+                    part.dispose
                 }
-                part.dispose
+                call.respondText {
+                    BaseResponse.toResponseString(
+                        HttpStatusCode.OK.value,
+                        "Upload berhasil.",
+                        UploadImageResponse(url = UploadFileService.getUrlImageGCS(objectName), message = "Upload image success")
+                    )
+                }
+            }catch (ex : Exception){
+                call.respondText { ex.message.toString() }
             }
 
-            var mapImageResponse = mapOf<String, String>()
-            @Suppress("UNCHECKED_CAST")
-            if (fileImage != null) mapImageResponse = UploadFileService().uploadFile(fileImage!!) as Map<String, String>
-            fileImage?.delete()
-            val urlResponse = mapImageResponse["url"] as String
-            val response = UploadImageResponse(
-                statusCode = if (urlResponse.isNotEmpty()) HttpStatusCode.OK.value else HttpStatusCode.Forbidden.value,
-                url = urlResponse,
-                message = if (urlResponse.isNotEmpty())  "Upload Image Success" else "Failed upload image"
-            )
-            call.respondText { Gson().toJson(response) }
         }
 
         post("/login"){

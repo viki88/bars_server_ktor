@@ -1,14 +1,12 @@
 package id.bikebosque
 
-import id.bikebosque.plugins.*
+import id.bikebosque.plugins.configureRouting
+import id.bikebosque.utils.FirebaseAdmin
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import io.ktor.server.plugins.doublereceive.*
 import org.ktorm.database.Database
-import java.io.File
-import java.io.FileInputStream
-import java.util.Properties
-import kotlin.io.path.Path
 
 fun main() {
     embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
@@ -17,14 +15,15 @@ fun main() {
 
 fun Application.module() {
 //    configureSecurity()
+    install(DoubleReceive)
+    FirebaseAdmin.init()
     configureRouting()
 }
 
 fun database() = Database.connect(
-    "jdbc:mysql://containers-us-west-38.railway.app:6055/railway",
+    "jdbc:mysql:///bars?cloudSqlInstance=bars-web-service:us-central1:bars-database&socketFactory=com.google.cloud.sql.mysql.SocketFactory",
     user = "root",
-    password = "bi1UAptl5eQzrQgUcC4D",
-    driver = "com.mysql.cj.jdbc.Driver"
+    password = "P@ssword"
 )
 
 fun localDatabase() = Database.connect(
@@ -34,4 +33,4 @@ fun localDatabase() = Database.connect(
     driver = "com.mysql.cj.jdbc.Driver"
 )
 
-fun connectDatabase(useLocal :Boolean = true) = if (useLocal) localDatabase() else database()
+fun connectDatabase(useLocal :Boolean = false) = if (useLocal) localDatabase() else database()
