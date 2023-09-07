@@ -17,7 +17,7 @@ ktor{
     docker{
         jreVersion.set(io.ktor.plugin.features.JreVersion.JRE_17)
         localImageName.set("bars_server")
-        imageTag.set("1.1.3")
+        imageTag.set("1.1.4")
 
         externalRegistry.set(
             io.ktor.plugin.features.DockerImageRegistry.googleContainerRegistry(
@@ -34,7 +34,7 @@ ktor{
 //group = "id.bikebosque"
 //version = "0.0.1"
 application {
-    mainClass.set("io.ktor.server.netty.EngineMain")
+//    mainClass.set("io.ktor.server.netty.EngineMain")
 //    mainClass.set("id.bikebosque.ApplicationKt")
 //
 //    val isDevelopment: Boolean = project.ext.has("development")

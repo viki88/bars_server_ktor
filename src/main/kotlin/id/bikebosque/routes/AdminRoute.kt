@@ -26,7 +26,7 @@ fun Route.adminRoute(){
             val nameParameter = addRoleParameters["name"]
             val descParameter = addRoleParameters["desc"]
 
-            var messageResponse = "Success Register"
+            var messageResponse = "Success Add Role"
             var statusCode = HttpStatusCode.OK.value
             try {
                 val int = connectDatabase().insertOrUpdate(Role){
