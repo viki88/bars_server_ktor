@@ -45,5 +45,9 @@ fun Route.adminRoute(){
 
             call.respondText { BaseResponse.toJsonString(HttpStatusCode(statusCode, messageResponse)) }
         }
+        delete("/removerole"){
+            val deleteRoleParameters = call.receiveParameters()
+
+        }
     }
 }

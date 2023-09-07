@@ -1,6 +1,3 @@
-
-import com.google.cloud.tools.gradle.appengine.appyaml.AppEngineAppYamlExtension
-
 val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
@@ -8,37 +5,60 @@ val logback_version: String by project
 plugins {
     application
     kotlin("jvm") version "1.8.22"
-    id("io.ktor.plugin") version "2.3.1"
+    id("io.ktor.plugin") version "2.3.3"
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("com.google.cloud.tools.appengine") version "2.4.2"
+}
+
+ktor{
+//    fatJar {
+//        archiveFileName.set("fat.jar")
+//    }
+    docker{
+        jreVersion.set(io.ktor.plugin.features.JreVersion.JRE_17)
+        localImageName.set("bars_server")
+        imageTag.set("1.1.3")
+
+        externalRegistry.set(
+            io.ktor.plugin.features.DockerImageRegistry.googleContainerRegistry(
+                projectName = provider{"bars-web-service"},
+                appName = provider{"bars_server"},
+                username = provider{""},
+                password = provider{""}
+            )
+        )
+
+    }
 }
 
 //group = "id.bikebosque"
 //version = "0.0.1"
 application {
-//    mainClass.set("io.ktor.server.netty.EngineMain")
-    mainClass.set("id.bikebosque.ApplicationKt")
+    mainClass.set("io.ktor.server.netty.EngineMain")
+//    mainClass.set("id.bikebosque.ApplicationKt")
 //
 //    val isDevelopment: Boolean = project.ext.has("development")
 //    applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
 
 }
 
-configure<AppEngineAppYamlExtension> {
-    stage {
-        setArtifact("build/libs/${project.name}-all.jar")
-    }
-    deploy {
-        version = "GCLOUD_CONFIG"
-        projectId = "GCLOUD_CONFIG"
-    }
-}
+//configure<AppEngineAppYamlExtension> {
+//    stage {
+//        setArtifact("build/libs/${project.name}-all.jar")
+//    }
+//    deploy {
+//        version = "GCLOUD_CONFIG"
+//        projectId = "GCLOUD_CONFIG"
+//    }
+//}
 
 repositories {
     mavenCentral()
+    maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap")}
 }
 
 dependencies {
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
     implementation("io.ktor:ktor-server-auth-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
@@ -61,6 +81,8 @@ dependencies {
     implementation("com.google.firebase:firebase-admin:9.1.1")
 
     implementation("io.ktor:ktor-server-double-receive:$ktor_version")
+    implementation("io.ktor:ktor-server-auth:$ktor_version")
+    implementation("io.ktor:ktor-server-auth-jwt:$ktor_version")
 
 
 }

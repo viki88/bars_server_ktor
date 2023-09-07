@@ -1,5 +1,7 @@
 package id.bikebosque.routes
 
+import com.auth0.jwt.JWT
+import com.auth0.jwt.algorithms.Algorithm
 import id.bikebosque.connectDatabase
 import id.bikebosque.models.response.BaseResponse
 import id.bikebosque.models.response.UploadImageResponse
@@ -9,18 +11,22 @@ import id.bikebosque.utils.md5
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.ktorm.dsl.*
 import org.ktorm.support.mysql.insertOrUpdate
 import java.sql.SQLIntegrityConstraintViolationException
+import java.util.*
 
 fun Route.userRoute(){
     route("/user"){
 
-        childRoute()
-        parentRoute()
+        authenticate("auth-jwt") {
+            childRoute()
+            parentRoute()
+        }
 
         post("/register") {
             val registerParameters = call.receiveParameters()
@@ -118,7 +124,8 @@ fun Route.userRoute(){
                         BaseResponse.toResponseString(
                             if (passwordIsMatched) HttpStatusCode.OK.value else HttpStatusCode.NotFound.value,
                             if (passwordIsMatched) "Sukses Login" else "Password anda salah silahkan coba lagi",
-                            null) }
+                            generateToken(application, emailParam ?: "")
+                        ) }
                 }
             }else call.respondText { BaseResponse.toResponseString(HttpStatusCode.NotFound.value, "Akun anda belum terdaftar", null) }
 
@@ -128,4 +135,17 @@ fun Route.userRoute(){
     }
 
 
+}
+
+fun generateToken(application: Application, username: String): String {
+    val secret = application.environment.config.property("jwt.secret").getString()
+    val issuer = application.environment.config.property("jwt.issuer").getString()
+    val audience = application.environment.config.property("jwt.audience").getString()
+
+    return JWT.create()
+        .withAudience(audience)
+        .withIssuer(issuer)
+        .withClaim("username", username)
+        .withExpiresAt(Date(System.currentTimeMillis() + 60000))
+        .sign(Algorithm.HMAC256(secret))
 }
