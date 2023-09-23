@@ -143,7 +143,7 @@ fun generateToken(application: Application, username: String): String {
     val audience = application.environment.config.property("jwt.audience").getString()
 
     return JWT.create()
-        .withAudience(audience)
+        .withSubject("Authentication")
         .withIssuer(issuer)
         .withClaim("username", username)
         .withExpiresAt(Date(System.currentTimeMillis() + 60000))
