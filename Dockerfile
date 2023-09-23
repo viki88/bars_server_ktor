@@ -4,7 +4,7 @@
 #CMD ["quickstart.sh"]
 
 FROM gradle:7-jdk11 AS build
-COPY --chown=gradle:gradle quickstart-docker /home/gradle/src/producer
+COPY --chown=gradle:gradle . /home/gradle/src/producer
 WORKDIR /home/gradle/src/producer
 RUN gradle buildFatJar --no-daemon --stacktrace
 
