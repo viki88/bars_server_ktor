@@ -11,3 +11,6 @@ fun String.md5(): String {
 fun String?.orEmpty() :String = this ?: ""
 
 fun Int?.orEmpty() :Int = this ?: 0
+
+fun Long.add30Minutes() :Long = this.plus(60*1000*30)
+fun Long.getInMinutes() :Long = this / (60000)

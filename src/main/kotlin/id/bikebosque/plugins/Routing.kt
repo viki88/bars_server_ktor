@@ -2,6 +2,7 @@ package id.bikebosque.plugins
 
 import id.bikebosque.routes.adminRoute
 import id.bikebosque.routes.userRoute
+import id.bikebosque.utils.getInMinutes
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
@@ -20,7 +21,7 @@ fun Application.configureRouting() {
                 val principal = call.principal<JWTPrincipal>()
                 val username = principal!!.payload.getClaim("username").asString()
                 val expiresAt = principal.expiresAt?.time?.minus(System.currentTimeMillis())
-                call.respondText("Hello, $username! Token is expired at $expiresAt ms")
+                call.respondText("Hello, $username! Token is expired at ${expiresAt?.getInMinutes()} minute(s)")
             }
         }
 

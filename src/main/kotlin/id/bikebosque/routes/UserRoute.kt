@@ -7,6 +7,7 @@ import id.bikebosque.models.response.BaseResponse
 import id.bikebosque.models.response.UploadImageResponse
 import id.bikebosque.models.tables.Parent
 import id.bikebosque.utils.UploadFileService
+import id.bikebosque.utils.add30Minutes
 import id.bikebosque.utils.md5
 import io.ktor.http.*
 import io.ktor.http.content.*
@@ -146,6 +147,6 @@ fun generateToken(application: Application, username: String): String {
         .withSubject("Authentication")
         .withIssuer(issuer)
         .withClaim("username", username)
-        .withExpiresAt(Date(System.currentTimeMillis() + 60000))
+        .withExpiresAt(Date(System.currentTimeMillis().add30Minutes()))
         .sign(Algorithm.HMAC256(secret))
 }
