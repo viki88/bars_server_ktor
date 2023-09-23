@@ -13,7 +13,7 @@ fun Application.configureRouting() {
         userRoute()
         adminRoute()
         get("/") {
-            call.respondText { "Hello world bars server" }
+            call.respondText { "Hello world bars server version 1.1.4" }
         }
         authenticate("auth-jwt") {
             get("/hello"){
