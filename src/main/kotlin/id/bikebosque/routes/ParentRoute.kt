@@ -6,6 +6,8 @@ import id.bikebosque.models.response.BaseResponse
 import id.bikebosque.models.tables.Parent
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.ktorm.dsl.*
@@ -13,7 +15,9 @@ import org.ktorm.dsl.*
 fun Route.parentRoute(){
     route("/parent"){
         get("/profile") {
-            val idParameter = call.parameters["id"]
+
+            val principal = call.principal<JWTPrincipal>()
+            val username = principal!!.payload.getClaim("username").asString()
 
             val query = connectDatabase().from(Parent).select(
                 Parent.nama,
@@ -25,7 +29,7 @@ fun Route.parentRoute(){
                 Parent.komunitas,
                 Parent.noKtp,
                 Parent.noHp
-            ).limit(0,1).where { Parent.id.eq(idParameter?.toInt() ?: 0) }
+            ).limit(0,1).where { Parent.email.eq(username ?: "") }
             val parentData = ParentData.toParentData(query)
 
             val httpStatusCode = HttpStatusCode.OK.value

@@ -45,7 +45,7 @@ fun Route.userRoute(){
             var messageResponse = "Success Register"
             var statusCode = HttpStatusCode.OK.value
             try {
-                val int = connectDatabase().insertOrUpdate(Parent){
+                connectDatabase().insertOrUpdate(Parent){
                     set(it.nama, namaParam)
                     set(it.email, emailParam)
                     set(it.password, passwordParam?.md5())
@@ -72,9 +72,7 @@ fun Route.userRoute(){
 
         post("/upload-image"){
             try {
-                var fileDescription :String
-                var fileName :String
-                var objectName :String = ""
+                var objectName = ""
 
                 val multipartData = call.receiveMultipart()
                 val queryData = call.parameters
@@ -82,11 +80,8 @@ fun Route.userRoute(){
                 val typeParameter = queryData["type"]
                 multipartData.forEachPart { part ->
                     when(part){
-                        is PartData.FormItem -> {
-                            fileDescription = part.value
-                        }
+                        is PartData.FormItem -> {}
                         is PartData.FileItem -> {
-                            fileName = part.originalFileName as String
                             val fileBytes = part.streamProvider().readBytes()
                             objectName = "$emailParameter-$typeParameter-image.jpg"
                             UploadFileService.uploadObject(fileBytes, objectName)
@@ -141,7 +136,6 @@ fun Route.userRoute(){
 fun generateToken(application: Application, username: String): String {
     val secret = application.environment.config.property("jwt.secret").getString()
     val issuer = application.environment.config.property("jwt.issuer").getString()
-    val audience = application.environment.config.property("jwt.audience").getString()
 
     return JWT.create()
         .withSubject("Authentication")
